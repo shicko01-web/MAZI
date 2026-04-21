@@ -1,2 +1,239 @@
 # MAZI
 טיול לאתונה - מאי 2026
+import React, { useState, useEffect } from 'react';
+import { Calendar, Utensils, ArrowRight, ArrowLeft, Camera, Image as ImageIcon, MapPin, Heart, AlertCircle, RefreshCw } from 'lucide-react';
+
+const apiKey = ""; // המפתח מסופק אוטומטית בסביבת ההרצה
+
+const App = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+  const [images, setImages] = useState({});
+  const [loading, setLoading] = useState({});
+  const [error, setError] = useState({});
+
+  const storyData = [
+    {
+      type: 'intro',
+      title: "אתונה של מזי",
+      subtitle: "מתנת יום הולדת לאישתי המופלאה",
+      content: "מזי אהובתי, הסיפור הזה הוא רק ההתחלה של המסע שלנו. הוא מוקדש לך, לכבוד יום הולדתך, כהבטחה לרגעים חדשים שנחרוט יחד בסמטאותיה של אתונה. כל תחנה כאן תוכננה באהבה, כדי שתהיה לך תפאורה מושלמת לחגוג את מי שאת.",
+      imagePrompt: "A romantic, cinematic wide shot of a Greek travel journal, olive leaves, and a cup of coffee on a sun-drenched wooden balcony overlooking Athens, realistic photography, soft golden hour light.",
+      fallbackColor: "bg-amber-50"
+    },
+    {
+      day: "רביעי, 13.5",
+      title: "נחיתה חגיגית",
+      narrative: "כשהגלגלים יגעו במסלול, האוויר החם של יוון יקבל את פנינו בחיבוק. המונית תוביל אותנו אל לב ליבה של פסירי, שם פינה שקטה בתוך השאון התוסס תחכה לנו כבית זמני. את הערב הראשון נפתח כמו האתונאים – בטעם של סופלקי ב-'לפטריס' ובקינוח של לוקומאדס חם ומתוק, תחת שמיים זרועי כוכבים.",
+      imagePrompt: "Cozy cobblestone street in Psyri Athens at night, warm hanging lights, small Greek taverna tables, romantic atmosphere, high resolution photography.",
+      fallbackColor: "bg-indigo-900"
+    },
+    {
+      day: "חמישי, 14.5",
+      title: "הלב ההיסטורי והבוהמה",
+      narrative: "הבוקר יעלה על האקרופוליס, ואנחנו נצעד בשבילים הירוקים של ת'יסיו. במאי, הפריחה שם היא שירה של הטבע. נרד אל הפלאקה, נאבד בין הסמטאות הציוריות, וניתן לרגליים להוביל אותנו לשופינג במדרחוב ארמו. את היום נחתום ב-'קרמנלידיקה', בין ריחות של נקניקי בוטיק ומבנה שנושם היסטוריה.",
+      imagePrompt: "The Parthenon in Athens viewed through vibrant spring flowers and green trees, bright sunny day in May, realistic oil painting style.",
+      fallbackColor: "bg-blue-100"
+    },
+    {
+      day: "שישי, 15.5",
+      title: "שווקים ואמנות מוטורית",
+      narrative: "היום הזה מוקדש לחושים שלך, מזי. שוק ורוואקיוס יפתח בפנינו עולם של צבעים וריחות. נמשיך אל המוזיאון המוטורי, שם הזמן עצר מלכת בין מכוניות קלאסיות מרהיבות, ונסיים בגזי, בתוך האדריכלות המרתקת של טכנופוליס עם ארוחת בשרים משובחת.",
+      special: "spices",
+      imagePrompt: "Close up of colorful piles of Greek spices in the central market of Athens, deep reds, yellows and greens, atmospheric market lighting, realistic.",
+      fallbackColor: "bg-orange-50"
+    },
+    {
+      day: "שבת, 16.5",
+      title: "פיראוס והריביירה הכחולה",
+      narrative: "הים קורא לנו. נצא אל מיקרולימנו, שם המים כחולים יותר והחיים שקטים יותר. נטייל בין היאכטות במרינה זאה, ננשום את המלח באוויר ונהנה מארוחת דגים טרייה מול האופק. בערב, נחזור למרכז כדי לשתות יין מול האקרופוליס המואר – רגע אחד של נצח.",
+      imagePrompt: "The harbor of Mikrolimano at Piraeus, beautiful blue sea, white luxury yachts, sunny day, cinematic photography.",
+      fallbackColor: "bg-cyan-50"
+    },
+    {
+      day: "ראשון, 17.5",
+      title: "טקסים וטבע עירוני",
+      narrative: "יום אחרון ונינוח. נראה את האוונזונים בסינטגמה, נטייל בגנים הלאומיים בין שבילים מוצלים וצמחייה עבותה שנושמת חיים. רגע לפני הטיסה, שופינג אחרון במונאסטיראקי כדי לקחת איתנו מעט מאתונה הביתה. הלב יהיה מלא, והמזוודות כבדות מחוויות.",
+      imagePrompt: "Lush green paths of the National Garden in Athens, sunlight beaming through palm trees, blooming flowers, realistic nature photography.",
+      fallbackColor: "bg-green-50"
+    },
+    {
+      type: 'outro',
+      title: "הקדשה מכל הלב",
+      content: "מוגש באהבה רבה ובהערצה ליום ההולדת - מתנה רגעית לציון 37 שנות הכרות שמהן 36 בנישואין, עם 2 ילדים מקסימים (גל ואסף) ו-4 נכדים משגעים (אנה ואיתן לגל, ו-ירדן ויובל לאסף).\n\nמאחל שנים רבות של טיולים, ריקודים ומסע משותף במעלה החיים.\n\nשיקו, בעלך ובן זוגך למסע המשותף...\n\nמאי 2026",
+      imagePrompt: "A breathtaking golden sunset over the Mediterranean sea from a high viewpoint in Athens, peaceful and romantic, high quality photography.",
+      fallbackColor: "bg-orange-100"
+    }
+  ];
+
+  const fetchWithRetry = async (url, options, retries = 5, backoff = 1000) => {
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      return await response.json();
+    } catch (err) {
+      if (retries > 0) {
+        await new Promise(resolve => setTimeout(resolve, backoff));
+        return fetchWithRetry(url, options, retries - 1, backoff * 2);
+      }
+      throw err;
+    }
+  };
+
+  const fetchImage = async (index) => {
+    if (images[index] || loading[index]) return;
+
+    setLoading(prev => ({ ...prev, [index]: true }));
+    setError(prev => ({ ...prev, [index]: null }));
+    
+    try {
+      const prompt = storyData[index].imagePrompt;
+      const result = await fetchWithRetry(
+        `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            instances: [{ prompt: prompt }], // Correct payload for imagen predict
+            parameters: { sampleCount: 1 }
+          })
+        }
+      );
+
+      const base64 = result.predictions?.[0]?.bytesBase64Encoded;
+      if (base64) {
+        setImages(prev => ({ ...prev, [index]: `data:image/png;base64,${base64}` }));
+      } else {
+        throw new Error('No image data returned');
+      }
+    } catch (err) {
+      console.error("Image generation failed after retries", err);
+      setError(prev => ({ ...prev, [index]: "אופס, היתה שגיאה בטעינת התמונה. נסי שוב עוד רגע." }));
+    } finally {
+      setLoading(prev => ({ ...prev, [index]: false }));
+    }
+  };
+
+  useEffect(() => {
+    fetchImage(currentPage);
+  }, [currentPage]);
+
+  const currentData = storyData[currentPage];
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8 selection:bg-blue-200" dir="rtl">
+      <div className="max-w-6xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[650px] border border-slate-100 transition-all duration-500">
+        
+        {/* Image Section */}
+        <div className={`w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full overflow-hidden ${currentData.fallbackColor}`}>
+          {loading[currentPage] ? (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/50 backdrop-blur-sm z-10">
+              <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-blue-600 font-bold animate-pulse text-lg">מצייר רגע באתונה...</p>
+            </div>
+          ) : images[currentPage] ? (
+            <img 
+              key={currentPage}
+              src={images[currentPage]} 
+              className="w-full h-full object-cover animate-in fade-in zoom-in duration-1000" 
+              alt={currentData.title}
+            />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-12 text-center">
+              <ImageIcon className="w-16 h-16 mb-4 opacity-20" />
+              <p className="text-xl font-medium opacity-40 italic">
+                {error[currentPage] ? error[currentPage] : `כאן תופיע תמונה של ${currentData.title}`}
+              </p>
+              {error[currentPage] && (
+                <button 
+                  onClick={() => fetchImage(currentPage)}
+                  className="mt-6 flex items-center gap-2 text-blue-600 bg-blue-50 hover:bg-blue-100 px-6 py-2 rounded-full font-bold transition-colors"
+                >
+                  <RefreshCw size={18} />
+                  <span>ניסיון חוזר</span>
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Spice Overlay */}
+          {currentData.special === 'spices' && !loading[currentPage] && !error[currentPage] && (
+            <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-md shadow-2xl p-6 rounded-3xl border border-orange-100 max-w-[240px] animate-bounce-slow z-20">
+              <div className="flex items-center gap-3 text-orange-600 mb-3 font-bold">
+                <div className="p-2 bg-orange-100 rounded-lg">
+                  <Utensils size={20} />
+                </div>
+                <span className="text-base">מחשבות על קציצות...</span>
+              </div>
+              <p className="text-sm text-slate-700 leading-relaxed text-right">
+                בשר, בצל, פטרוזיליה ו... <br/>
+                <span className="font-bold text-orange-600">כמון יווני</span> ו<span className="font-bold text-orange-600">פפריקה מעושנת</span>.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Content Section */}
+        <div className="w-full lg:w-1/2 p-10 lg:p-16 flex flex-col justify-between bg-white">
+          <div className="animate-in slide-in-from-right-8 duration-700">
+            {currentData.day && (
+              <div className="flex items-center gap-2 text-blue-500 font-bold text-sm mb-6 uppercase tracking-[0.2em]">
+                <Calendar size={18} />
+                <span>{currentData.day}</span>
+              </div>
+            )}
+            
+            <h1 className="text-4xl lg:text-6xl font-black text-slate-800 mb-8 leading-[1.1] text-right">
+              {currentData.title}
+            </h1>
+            
+            {currentData.subtitle && (
+              <h2 className="text-2xl text-blue-400 mb-8 font-semibold text-right border-r-4 border-blue-100 pr-4 italic">
+                {currentData.subtitle}
+              </h2>
+            )}
+
+            <div className="text-xl lg:text-2xl text-slate-600 leading-relaxed whitespace-pre-line text-right font-light">
+              {currentData.content || currentData.narrative}
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div className="mt-16 pt-10 border-t border-slate-100 flex items-center justify-between">
+            <button 
+              onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+              disabled={currentPage === 0}
+              className={`group flex items-center gap-3 p-4 rounded-2xl transition-all ${currentPage === 0 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:bg-blue-50 hover:text-blue-600 hover:px-6'}`}
+            >
+              <ArrowRight size={32} className="group-hover:scale-110 transition-transform" />
+            </button>
+
+            <div className="flex gap-3">
+              {storyData.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i)}
+                  className={`h-2 transition-all duration-500 rounded-full ${i === currentPage ? 'w-12 bg-blue-500' : 'w-2 bg-slate-200 hover:bg-slate-300'}`}
+                />
+              ))}
+            </div>
+
+            <button 
+              onClick={() => setCurrentPage(p => Math.min(storyData.length - 1, p + 1))}
+              disabled={currentPage === storyData.length - 1}
+              className={`group flex items-center gap-3 p-4 rounded-2xl transition-all ${currentPage === storyData.length - 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:bg-blue-50 hover:text-blue-600 hover:px-6'}`}
+            >
+              <ArrowLeft size={32} className="group-hover:scale-110 transition-transform" />
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div className="mt-10 text-slate-400 text-sm font-medium flex items-center gap-2 opacity-60">
+        <Heart size={14} className="fill-slate-400" />
+        <span>מיוצר באהבה עבור מזי ושיקו | אתונה 2026</span>
+      </div>
+    </div>
+  );
+};
+
+export default App;
