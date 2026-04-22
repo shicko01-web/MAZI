@@ -3,89 +3,300 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>המתנה של מזי - סיפור יום הולדת</title>
+    <title>אתונה של מזי - סיפור יום הולדת</title>
+    <!-- טעינת ספריות חיצוניות דרך CDN -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Assistant', sans-serif; background-color: #f8fafc; margin: 0; padding: 0; }
-        .fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body {
+            font-family: 'Assistant', sans-serif;
+            background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+        }
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-bounce-slow {
+            animation: bounce-slow 4s ease-in-out infinite;
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
     <div id="root"></div>
+
     <script type="text/babel">
-        const storyData = [
-            {
-                title: "המתנה של מזי",
-                imageUrl: "https://images.unsplash.com/photo-1594145037190-2646d88989e2?auto=format&fit=crop&w=1200&q=80"
-            },
-            {
-                title: "נחיתה חגיגית באתונה",
-                imageUrl: "https://images.unsplash.com/photo-1541336032412-224b17385d1e?auto=format&fit=crop&w=1200&q=80"
-            },
-            {
-                title: "הלב ההיסטורי - האקרופוליס",
-                imageUrl: "https://images.unsplash.com/photo-1603565816030-6b389eafc742?auto=format&fit=crop&w=1200&q=80"
-            },
-            {
-                title: "שווקים וצבעים בפלאקה",
-                imageUrl: "https://images.unsplash.com/photo-1555990538-4f2430030093?auto=format&fit=crop&w=1200&q=80"
-            },
-            {
-                title: "פיראוס והים הכחול",
-                imageUrl: "https://images.unsplash.com/photo-1548685913-fe6678babeac?auto=format&fit=crop&w=1200&q=80"
-            },
-            {
-                title: "הגנים הלאומיים הירוקים",
-                imageUrl: "https://images.unsplash.com/photo-1574340316049-3669046c827c?auto=format&fit=crop&w=1200&q=80"
-            },
-            {
-                title: "סוף המסע והתחלות חדשות",
-                imageUrl: "https://images.unsplash.com/photo-1504512485060-723c34008436?auto=format&fit=crop&w=1200&q=80"
-            }
-        ];
+        // שימוש ב-Lucide דרך SVG מובנה כדי למנוע בעיות טעינה ב-GitHub
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const icons = {
+                calendar: <path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" />,
+                utensils: <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2M7 2v20M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />,
+                arrowRight: <path d="m9 18 6-6-6-6" />,
+                arrowLeft: <path d="m15 18-6-6 6-6" />,
+                image: (
+                    <g>
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                        <circle cx="9" cy="9" r="2" />
+                    </g>
+                ),
+                heart: <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />,
+                refresh: <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8m0 0V2m0 6h-6M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16m0 0v6m0-6h6" />
+            };
+
+            return (
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={size}
+                    height={size}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className={className}
+                >
+                    {icons[name]}
+                </svg>
+            );
+        };
+
+        const apiKey = ""; // המפתח מסופק אוטומטית בסביבת ההרצה
 
         const App = () => {
-            const [p, setP] = React.useState(0);
+            const [currentPage, setCurrentPage] = React.useState(0);
+            const [images, setImages] = React.useState({});
+            const [loading, setLoading] = React.useState({});
+            const [error, setError] = React.useState({});
+
+            const storyData = [
+                {
+                    type: 'intro',
+                    title: "אתונה של מזי",
+                    subtitle: "מתנת יום הולדת לאישתי המופלאה",
+                    content: "מזי אהובתי, הסיפור הזה הוא רק ההתחלה של המסע שלנו. הוא מוקדש לך, לכבוד יום הולדתך, כהבטחה לרגעים חדשים שנחרוט יחד בסמטאותיה של אתונה. כל תחנה כאן תוכננה באהבה, כדי שתהיה לך תפאורה מושלמת לחגוג את מי שאת.",
+                    imagePrompt: "A romantic, cinematic wide shot of a Greek travel journal, olive leaves, and a cup of coffee on a sun-drenched wooden balcony overlooking Athens, realistic photography, soft golden hour light.",
+                    fallbackColor: "bg-amber-50"
+                },
+                {
+                    day: "רביעי, 13.5",
+                    title: "נחיתה חגיגית",
+                    narrative: "כשהגלגלים יגעו במסלול, האוויר החם של יוון יקבל את פנינו בחיבוק. המונית תוביל אותנו אל לב ליבה של פסירי, שם פינה שקטה בתוך השאון התוסס תחכה לנו כבית זמני. את הערב הראשון נפתח כמו האתונאים – בטעם של סופלקי ב-'לפטריס' ובקינוח של לוקומאדס חם ומתוק, תחת שמיים זרועי כוכבים.",
+                    imagePrompt: "Cozy cobblestone street in Psyri Athens at night, warm hanging lights, small Greek taverna tables, romantic atmosphere, high resolution photography.",
+                    fallbackColor: "bg-indigo-900"
+                },
+                {
+                    day: "חמישי, 14.5",
+                    title: "הלב ההיסטורי והבוהמה",
+                    narrative: "הבוקר יעלה על האקרופוליס, ואנחנו נצעד בשבילים הירוקים של ת'יסיו. במאי, הפריחה שם היא שירה של הטבע. נרד אל הפלאקה, נאבד בין הסמטאות הציוריות, וניתן לרגליים להוביל אותנו לשופינג במדרחוב ארמו. את היום נחתום ב-'קרמנלידיקה', בין ריחות של נקניקי בוטיק ומבנה שנושם היסטוריה.",
+                    imagePrompt: "The Parthenon in Athens viewed through vibrant spring flowers and green trees, bright sunny day in May, realistic oil painting style.",
+                    fallbackColor: "bg-blue-100"
+                },
+                {
+                    day: "שישי, 15.5",
+                    title: "שווקים ואמנות מוטורית",
+                    narrative: "היום הזה מוקדש לחושים שלך, מזי. שוק ורוואקיוס יפתח בפנינו עולם של צבעים וריחות. נמשיך אל המוזיאון המוטורי, שם הזמן עצר מלכת בין מכוניות קלאסיות מרהיבות, ונסיים בגזי, בתוך האדריכלות המרתקת של טכנופוליס עם ארוחת בשרים משובחת.",
+                    special: "spices",
+                    imagePrompt: "Close up of colorful piles of Greek spices in the central market of Athens, deep reds, yellows and greens, atmospheric market lighting, realistic.",
+                    fallbackColor: "bg-orange-50"
+                },
+                {
+                    day: "שבת, 16.5",
+                    title: "פיראוס והריביירה הכחולה",
+                    narrative: "הים קורא לנו. נצא אל מיקרולימנו, שם המים כחולים יותר והחיים שקטים יותר. נטייל בין היאכטות במרינה זאה, ננשום את המלח באוויר ונהנה מארוחת דגים טרייה מול האופק. בערב, נחזור למרכז כדי לשתות יין מול האקרופוליס המואר – רגע אחד של נצח.",
+                    imagePrompt: "The harbor of Mikrolimano at Piraeus, beautiful blue sea, white luxury yachts, sunny day, cinematic photography.",
+                    fallbackColor: "bg-cyan-50"
+                },
+                {
+                    day: "ראשון, 17.5",
+                    title: "טקסים וטבע עירוני",
+                    narrative: "יום אחרון ונינוח. נראה את האוונזונים בסינטגמה, נטייל בגנים הלאומיים בין שבילים מוצלים וצמחייה עבותה שנושמת חיים. רגע לפני הטיסה, שופינג אחרון במונאסטיראקי כדי לקחת איתנו מעט מאתונה הביתה. הלב יהיה מלא, והמזוודות כבדות מחוויות.",
+                    imagePrompt: "Lush green paths of the National Garden in Athens, sunlight beaming through palm trees, blooming flowers, realistic nature photography.",
+                    fallbackColor: "bg-green-50"
+                },
+                {
+                    type: 'outro',
+                    title: "הקדשה מכל הלב",
+                    content: "מוגש באהבה רבה ובהערצה ליום ההולדת - מתנה רגעית לציון 37 שנות הכרות שמהן 36 בנישואין, עם 2 ילדים מקסימים (גל ואסף) ו-4 נכדים משגעים (אנה ואיתן לגל, ו-ירדן ויובל לאסף).\n\nמאחל שנים רבות של טיולים, ריקודים ומסע משותף במעלה החיים.\n\nשיקו, בעלך ובן זוגך למסע המשותף...\n\nמאי 2026",
+                    imagePrompt: "A breathtaking golden sunset over the Mediterranean sea from a high viewpoint in Athens, peaceful and romantic, high quality photography.",
+                    fallbackColor: "bg-orange-100"
+                }
+            ];
+
+            const fetchWithRetry = async (url, options, retries = 5, backoff = 1000) => {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
+                } catch (err) {
+                    if (retries > 0) {
+                        await new Promise(resolve => setTimeout(resolve, backoff));
+                        return fetchWithRetry(url, options, retries - 1, backoff * 2);
+                    }
+                    throw err;
+                }
+            };
+
+            const fetchImage = async (index) => {
+                if (images[index] || loading[index]) return;
+
+                setLoading(prev => ({ ...prev, [index]: true }));
+                setError(prev => ({ ...prev, [index]: null }));
+                
+                try {
+                    const prompt = storyData[index].imagePrompt;
+                    const result = await fetchWithRetry(
+                        `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                instances: [{ prompt: prompt }],
+                                parameters: { sampleCount: 1 }
+                            })
+                        }
+                    );
+
+                    const base64 = result.predictions?.[0]?.bytesBase64Encoded;
+                    if (base64) {
+                        setImages(prev => ({ ...prev, [index]: `data:image/png;base64,${base64}` }));
+                    } else {
+                        throw new Error('No image data returned');
+                    }
+                } catch (err) {
+                    setError(prev => ({ ...prev, [index]: "שגיאה בטעינת התמונה." }));
+                } finally {
+                    setLoading(prev => ({ ...prev, [index]: false }));
+                }
+            };
+
+            React.useEffect(() => {
+                fetchImage(currentPage);
+            }, [currentPage]);
+
+            const currentData = storyData[currentPage];
+
             return (
-                <div className="min-h-screen bg-slate-50 p-4 md:p-8 flex flex-col items-center justify-center font-sans" dir="rtl">
-                    <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden fade-in">
-                        <img 
-                            src={storyData[p].imageUrl} 
-                            className="w-full h-64 md:h-96 object-cover" 
-                            alt={storyData[p].title} 
-                        />
-                        <div className="p-8 text-center">
-                            <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-8">{storyData[p].title}</h1>
-                            
-                            <div className="flex justify-between items-center mt-8 border-t pt-8">
-                                <button 
-                                    onClick={() => setP(Math.max(0, p - 1))}
-                                    disabled={p === 0}
-                                    className="px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-30 hover:bg-blue-600 transition-colors"
-                                >
-                                    הקודם
-                                </button>
+                <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4 md:p-8" dir="rtl">
+                    <div className="max-w-6xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[650px] border border-slate-100">
+                        
+                        {/* Image Section */}
+                        <div className={`w-full lg:w-1/2 relative min-h-[400px] lg:min-h-full overflow-hidden ${currentData.fallbackColor}`}>
+                            {loading[currentPage] ? (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/50 backdrop-blur-sm z-10">
+                                    <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                    <p className="text-blue-600 font-bold animate-pulse text-lg text-center">מצייר רגע באתונה...</p>
+                                </div>
+                            ) : images[currentPage] ? (
+                                <img 
+                                    src={images[currentPage]} 
+                                    className="w-full h-full object-cover fade-in" 
+                                    alt={currentData.title}
+                                />
+                            ) : (
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 p-12 text-center">
+                                    <Icon name="image" size={64} className="mb-4 opacity-20" />
+                                    <p className="text-xl font-medium opacity-40 italic text-center">כאן תופיע תמונה של {currentData.title}</p>
+                                    {error[currentPage] && (
+                                        <button 
+                                            onClick={() => fetchImage(currentPage)}
+                                            className="mt-6 flex items-center gap-2 text-blue-600 bg-blue-50 hover:bg-blue-100 px-6 py-2 rounded-full font-bold transition-colors"
+                                        >
+                                            <Icon name="refresh" size={18} />
+                                            <span>ניסיון חוזר</span>
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Spice Overlay */}
+                            {currentData.special === 'spices' && !loading[currentPage] && !error[currentPage] && (
+                                <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-md shadow-2xl p-6 rounded-3xl border border-orange-100 max-w-[240px] animate-bounce-slow z-20">
+                                    <div className="flex items-center gap-3 text-orange-600 mb-3 font-bold">
+                                        <div className="p-2 bg-orange-100 rounded-lg">
+                                            <Icon name="utensils" size={20} />
+                                        </div>
+                                        <span className="text-base font-bold">מחשבות על קציצות...</span>
+                                    </div>
+                                    <p className="text-sm text-slate-700 leading-relaxed text-right">
+                                        בשר, בצל, פטרוזיליה ו... <br/>
+                                        <span className="font-bold text-orange-600">כמון יווני</span> ו<span className="font-bold text-orange-600">פפריקה מעושנת</span>.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Content Section */}
+                        <div className="w-full lg:w-1/2 p-10 lg:p-16 flex flex-col justify-between bg-white">
+                            <div className="fade-in">
+                                {currentData.day && (
+                                    <div className="flex items-center gap-2 text-blue-500 font-bold text-sm mb-6 uppercase tracking-[0.2em]">
+                                        <Icon name="calendar" size={18} />
+                                        <span>{currentData.day}</span>
+                                    </div>
+                                )}
                                 
-                                <div className="flex gap-2">
+                                <h1 className="text-4xl lg:text-6xl font-black text-slate-800 mb-8 leading-[1.1] text-right">
+                                    {currentData.title}
+                                </h1>
+                                
+                                {currentData.subtitle && (
+                                    <h2 className="text-2xl text-blue-400 mb-8 font-semibold text-right border-r-4 border-blue-100 pr-4 italic">
+                                        {currentData.subtitle}
+                                    </h2>
+                                )}
+
+                                <div className="text-xl lg:text-2xl text-slate-600 leading-relaxed whitespace-pre-line text-right font-light">
+                                    {currentData.content || currentData.narrative}
+                                </div>
+                            </div>
+
+                            {/* Navigation */}
+                            <div className="mt-16 pt-10 border-t border-slate-100 flex items-center justify-between">
+                                <button 
+                                    onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
+                                    disabled={currentPage === 0}
+                                    className={`p-4 rounded-2xl transition-all ${currentPage === 0 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:bg-blue-50 hover:text-blue-600'}`}
+                                >
+                                    <Icon name="arrowRight" size={32} />
+                                </button>
+
+                                <div className="flex gap-3">
                                     {storyData.map((_, i) => (
-                                        <div key={i} className={`w-3 h-3 rounded-full ${i === p ? 'bg-blue-500' : 'bg-slate-200'}`} />
+                                        <button
+                                            key={i}
+                                            onClick={() => setCurrentPage(i)}
+                                            className={`h-2 transition-all duration-500 rounded-full ${i === currentPage ? 'w-12 bg-blue-500' : 'w-2 bg-slate-200 hover:bg-slate-300'}`}
+                                        />
                                     ))}
                                 </div>
 
                                 <button 
-                                    onClick={() => setP(Math.min(storyData.length - 1, p + 1))}
-                                    disabled={p === storyData.length - 1}
-                                    className="px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-30 hover:bg-blue-600 transition-colors"
+                                    onClick={() => setCurrentPage(p => Math.min(storyData.length - 1, p + 1))}
+                                    disabled={currentPage === storyData.length - 1}
+                                    className={`p-4 rounded-2xl transition-all ${currentPage === storyData.length - 1 ? 'text-slate-200 cursor-not-allowed' : 'text-slate-400 hover:bg-blue-50 hover:text-blue-600'}`}
                                 >
-                                    הבא
+                                    <Icon name="arrowLeft" size={32} />
                                 </button>
                             </div>
                         </div>
+                    </div>
+                    <div className="mt-10 text-slate-400 text-sm font-medium flex items-center gap-2 opacity-60 text-center">
+                        <Icon name="heart" size={14} className="fill-slate-400" />
+                        <span>מיוצר באהבה עבור מזי ושיקו | אתונה 2026</span>
                     </div>
                 </div>
             );
