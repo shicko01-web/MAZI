@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>החתונה של מזי - סיפור יום הולדת</title>
+    <title>המתנה של מזי - סיפור יום הולדת</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -19,13 +19,34 @@
     <div id="root"></div>
     <script type="text/babel">
         const storyData = [
-            { title: "אתונה של מזי", imageUrl: "https://images.unsplash.com/photo-1543501659-0097f4803714?auto=format&fit=crop&w=1200&q=80" },
-            { title: "נחיתה חגיגית", imageUrl: "https://images.unsplash.com/photo-1629115938930-97495914652c?auto=format&fit=crop&w=1200&q=80" },
-            { title: "הלב ההיסטורי", imageUrl: "https://images.unsplash.com/photo-1603566039115-509ef5cfa639?auto=format&fit=crop&w=1200&q=80" },
-            { title: "שווקים וצבעים", imageUrl: "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=1200&q=80" },
-            { title: "פיראוס והים", imageUrl: "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1200&q=80" },
-            { title: "הגנים הלאומיים", imageUrl: "https://images.unsplash.com/photo-1600100412151-698f161839f9?auto=format&fit=crop&w=1200&q=80" },
-            { title: "סוף המסע", imageUrl: "https://images.unsplash.com/photo-1544971587-b842c27f8e14?auto=format&fit=crop&w=1200&q=80" }
+            {
+                title: "המתנה של מזי",
+                imageUrl: "https://images.unsplash.com/photo-1594145037190-2646d88989e2?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                title: "נחיתה חגיגית באתונה",
+                imageUrl: "https://images.unsplash.com/photo-1541336032412-224b17385d1e?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                title: "הלב ההיסטורי - האקרופוליס",
+                imageUrl: "https://images.unsplash.com/photo-1603565816030-6b389eafc742?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                title: "שווקים וצבעים בפלאקה",
+                imageUrl: "https://images.unsplash.com/photo-1555990538-4f2430030093?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                title: "פיראוס והים הכחול",
+                imageUrl: "https://images.unsplash.com/photo-1548685913-fe6678babeac?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                title: "הגנים הלאומיים הירוקים",
+                imageUrl: "https://images.unsplash.com/photo-1574340316049-3669046c827c?auto=format&fit=crop&w=1200&q=80"
+            },
+            {
+                title: "סוף המסע והתחלות חדשות",
+                imageUrl: "https://images.unsplash.com/photo-1504512485060-723c34008436?auto=format&fit=crop&w=1200&q=80"
+            }
         ];
 
         const App = () => {
@@ -33,23 +54,43 @@
             return (
                 <div className="min-h-screen bg-slate-50 p-4 md:p-8 flex flex-col items-center justify-center font-sans" dir="rtl">
                     <div className="max-w-4xl w-full bg-white rounded-3xl shadow-2xl overflow-hidden fade-in">
-                        <img src={storyData[p].imageUrl} className="w-full h-64 md:h-96 object-cover" alt={storyData[p].title} />
+                        <img 
+                            src={storyData[p].imageUrl} 
+                            className="w-full h-64 md:h-96 object-cover" 
+                            alt={storyData[p].title} 
+                        />
                         <div className="p-8 text-center">
                             <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-8">{storyData[p].title}</h1>
+                            
                             <div className="flex justify-between items-center mt-8 border-t pt-8">
-                                <button onClick={() => setP(Math.max(0, p - 1))} disabled={p === 0} className="px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-30">הקודם</button>
+                                <button 
+                                    onClick={() => setP(Math.max(0, p - 1))}
+                                    disabled={p === 0}
+                                    className="px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-30 hover:bg-blue-600 transition-colors"
+                                >
+                                    הקודם
+                                </button>
+                                
                                 <div className="flex gap-2">
                                     {storyData.map((_, i) => (
                                         <div key={i} className={`w-3 h-3 rounded-full ${i === p ? 'bg-blue-500' : 'bg-slate-200'}`} />
                                     ))}
                                 </div>
-                                <button onClick={() => setP(Math.min(storyData.length - 1, p + 1))} disabled={p === storyData.length - 1} className="px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-30">הבא</button>
+
+                                <button 
+                                    onClick={() => setP(Math.min(storyData.length - 1, p + 1))}
+                                    disabled={p === storyData.length - 1}
+                                    className="px-6 py-2 bg-blue-500 text-white rounded-full disabled:opacity-30 hover:bg-blue-600 transition-colors"
+                                >
+                                    הבא
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             );
         };
+
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
